@@ -1,4 +1,4 @@
-package com.shopme.shopmebackend;
+package com.shopme.admin.user;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
