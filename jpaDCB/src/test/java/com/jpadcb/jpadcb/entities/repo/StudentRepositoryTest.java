@@ -90,6 +90,25 @@ class StudentRepositoryTest {
 
         System.out.println("-----------------------------------");
 
+    }@Test
+    public  void printStudentfindByFirstNameAndLastName(){
+        Student findAll = studentRepository.findByFirstNameAndLastName("fas","");
+
+        System.out.println("---------------first name--------------------");
+        System.out.println(findAll);
+
+        System.out.println("-----------------------------------");
+
     }
 
+    @Test
+    public  void printStudentget(){
+        Student findAll = studentRepository.getStudentByEmailAddress("fs@gmail.come");
+
+        System.out.println("---------------first name--------------------");
+        System.out.println(findAll);
+
+        System.out.println("-----------------------------------");
+
+    }
 }
