@@ -111,4 +111,25 @@ class StudentRepositoryTest {
         System.out.println("-----------------------------------");
 
     }
+    @Test
+    public  void printStudentgetStudentByEmailAddressNative(){
+        Student findAll = studentRepository.getStudentByEmailAddressNativeParam("fas@mgail.come");
+
+        System.out.println("---------------fas@mgail.come name--------------------");
+        System.out.println(findAll);
+
+        System.out.println("-----------------------------------");
+
+    }
+    @Test
+    public  void updateStudentNameByEmailId(){
+        int findAll = studentRepository.updateStudentNameByEmailId("new new King kong","fas@mgail.come");
+
+        System.out.println("---------------fas@mgail.come name--------------------");
+        System.out.println(findAll);
+
+        System.out.println("-----------------------------------");
+
+    }
+
 }
