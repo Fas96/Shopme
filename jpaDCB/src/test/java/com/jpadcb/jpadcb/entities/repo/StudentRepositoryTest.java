@@ -70,4 +70,26 @@ class StudentRepositoryTest {
         System.out.println("-----------------------------------");
 
     }
+
+    @Test
+    public  void printStudentfindByLastNameNotNull(){
+        List<Student> findAll = studentRepository.findByLastNameNotNull();
+
+        System.out.println("---------------first name--------------------");
+        System.out.println(findAll);
+
+        System.out.println("-----------------------------------");
+
+    }
+    @Test
+    public  void printStudentfindByGuardianName(){
+        List<Student> findAll = studentRepository.findByGuardianName("nikel");
+
+        System.out.println("---------------first name--------------------");
+        System.out.println(findAll);
+
+        System.out.println("-----------------------------------");
+
+    }
+
 }
