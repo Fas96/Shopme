@@ -1,10 +1,7 @@
 package com.jpadcb.jpadcb.entities;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -14,6 +11,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "tbl_course_material")
+@ToString(exclude = "course")
 public class CourseMaterial {
 
     @Id
@@ -25,7 +23,7 @@ public class CourseMaterial {
     //with no cascading this is the error that happens because course material is not saved in db
     //org.springframework.dao.InvalidDataAccessApiUsageException:
     // org.hibernate.TransientPropertyValueException: object references an unsaved
-    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER) // allows all to execute
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER,optional = false) // allows all to execute
     @JoinColumn(name = "course_id",referencedColumnName = "courseId")
     private Course course;
 
