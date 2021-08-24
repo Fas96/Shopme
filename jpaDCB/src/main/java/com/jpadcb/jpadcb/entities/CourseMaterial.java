@@ -22,7 +22,10 @@ public class CourseMaterial {
     private Long courseMaterialId;
     private String url;
 
-    @OneToOne
+    //with no cascading this is the error that happens because course material is not saved in db
+    //org.springframework.dao.InvalidDataAccessApiUsageException:
+    // org.hibernate.TransientPropertyValueException: object references an unsaved
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER) // allows all to execute
     @JoinColumn(name = "course_id",referencedColumnName = "courseId")
     private Course course;
 

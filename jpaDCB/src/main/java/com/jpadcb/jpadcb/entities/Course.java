@@ -23,6 +23,6 @@ public class Course {
     private String title;
     private int credit;
 
-    @OneToOne(mappedBy = "course")
-    private CourseMaterial courseMaterial;
+//    @OneToOne(mappedBy = "course")
+//    private CourseMaterial courseMaterial;
 }
