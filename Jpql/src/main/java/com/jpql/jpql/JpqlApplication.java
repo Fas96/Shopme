@@ -38,6 +38,9 @@ public class JpqlApplication {
             TypedQuery<Member> query = em.createQuery("select m from Member m", Member.class);
 
             List<Member> list = query.getResultList();
+
+            Member member = list.get(0);
+            member.setAge(9000);
             System.out.println("====================");
             System.out.println(list);
             System.out.println("====================");
