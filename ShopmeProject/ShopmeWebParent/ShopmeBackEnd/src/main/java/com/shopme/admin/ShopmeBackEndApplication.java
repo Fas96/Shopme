@@ -1,0 +1,19 @@
+package com.shopme.admin;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+
+@SpringBootApplication
+@EnableJpaRepositories(basePackages = {"com.shopme.common.*","com.shopme.admin"})
+@EntityScan({"com.shopme.common.entity","com.shopme.admin.entity"})
+public class ShopmeBackEndApplication  {
+
+    public static void main(String[] args) {
+        SpringApplication.run(ShopmeBackEndApplication.class, args);
+    }
+
+
+}
