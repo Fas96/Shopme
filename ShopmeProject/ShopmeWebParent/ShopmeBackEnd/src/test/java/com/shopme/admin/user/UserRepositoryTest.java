@@ -23,6 +23,11 @@ public class UserRepositoryTest {
 
 
     @Test
+    public  void testGetUserBYEmail(){
+        User user = userRepository.getUserByEmail("abac@gmail.com");
+        assertThat(user).isNotNull();
+    }
+    @Test
     public void testCreateFirstUserWithOneRole() {
         Role role = testEntityManager.find(Role.class, 1);
         User user = new User("firibu.anyass@gmail.com", "1234", "Fas", "Bhim");

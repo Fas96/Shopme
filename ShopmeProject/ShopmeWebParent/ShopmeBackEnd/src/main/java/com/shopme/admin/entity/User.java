@@ -7,6 +7,7 @@ import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+@ToString
 @Entity
 @Table(name = "users")
 public class User {
@@ -53,6 +54,14 @@ public class User {
     public Set<Role> getRoles() {
         return roles;
     }
+    public String rolex(){
+        String em="";
+        for(Role e:roles){
+            String s = em + " | " + e.getName();
+            em=s;
+        }
+        return  em;
+    }
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
@@ -63,7 +72,6 @@ public class User {
     public  void addRole(Role role){
         this.roles.add(role);
     }
-
 
     public String getEmail() {
         return email;
@@ -113,14 +121,5 @@ public class User {
         this.enabled = enabled;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", firstname='" + firstname + '\'' +
-                ", lastname='" + lastname + '\'' +
-                ", enabled=" + enabled +
-                '}';
-    }
+
 }

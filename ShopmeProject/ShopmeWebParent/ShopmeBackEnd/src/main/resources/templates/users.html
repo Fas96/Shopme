@@ -5,7 +5,6 @@
     <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
     <!--    FOR RESPONSIVE ON MOBILE PHONES-->
     <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
-
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}" type="text/css"/>
     <script type="text/javascript" th:src="@{/webjars/jquery/3.4.1/jquery.min.js}"></script>
     <script type="text/javascript" th:src="@{/webjars/bootstrap/4.3.1/js/bootstrap.min.js}"></script>
@@ -43,13 +42,16 @@
         <h2>Manage Users </h2>
 
     </div>
+    <div th:if="${ sMessage != null}" class="alert alert-success text-center">
+        [[${sMessage}]]
+    </div>
 
     <!-- /# column -->
     <div class="m-2 table-responsive-xl">
         <div class="card">
             <div class="card-title">
-                <h4>Table Bordered </h4>
-
+                <h4>Customer List </h4>
+                <a th:href="@{/users/new}">Create New User</a>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -71,11 +73,11 @@
                             <th scope="row">[[${user.id}]]</th>
                             <td>[[${user.photos}]]</td>
                             <td>[[${user.Email}]]</td>
-                            <td><span class="badge badge-primary">[[${user.firstname}]]</span></td>
-                            <td><span class="badge badge-primary">[[${user.lastname}]]</span></td>
-                            <td>[[${user.roles[0]}]]</td>
+                            <td>[[${user.firstname}]]</td>
+                            <td>[[${user.lastname}]] </td>
+                            <td>[[${user.rolex}]]</td>
                             <td class="color-primary">[[${user.enabled}]]</td>
-                            <td class="color-primary">Edit  &nbsp; Delete </td>
+                            <td class="color-primary"><a th:href="@{#}"><span class="badge badge-primary">Edit</span></a>  &nbsp;<a th:href="@{#}"><span class="badge badge-danger"> Delete</span> </a></td>
                         </tr>
 
 
@@ -86,7 +88,7 @@
         </div>
     </div>
 
-    <div>
+    <div class="text-xl-center">
         <p>Shopme Control Panel-Copyright &copy; Shopme</p>
     </div>
 
