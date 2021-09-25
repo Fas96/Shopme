@@ -72,4 +72,20 @@ public class UserController {
         redirectAttributes.addFlashAttribute("sMessage","User has been saved Successfully");
         return "redirect:/users";
     }
+
+
+    @GetMapping("users/{id}/enabled/{status}")
+    public String updateUserEnableStatus(@PathVariable("id") Integer id,@PathVariable("status") boolean status, RedirectAttributes redirectAttributes){
+
+        userService.updateUserEnabledStatus(id,status);
+        String msg="";
+        if(status){
+            msg="User "+id +" enable status is enabled";
+        }else {
+            msg="User enable " +id+ " status is disabled";
+        }
+        redirectAttributes.addFlashAttribute("sMessage",msg);
+
+        return "redirect:/users";
+    }
 }

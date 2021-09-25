@@ -7,12 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class UserService {
     @Autowired
     private UserRepository userRepository;
@@ -44,6 +46,9 @@ public class UserService {
 
 
         userRepository.save(user);
+    }
+    public void updateUserEnabledStatus(Integer id,boolean enabled){
+        userRepository.updateEnabledStatus(id, enabled);
     }
     public boolean isEmailUnique(String email,Integer id){
         User userByEmail = userRepository.getUserByEmail(email);

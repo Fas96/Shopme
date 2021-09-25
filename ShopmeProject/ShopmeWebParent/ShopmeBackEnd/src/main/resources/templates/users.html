@@ -79,9 +79,11 @@
                             <td>[[${user.lastname}]] </td>
                             <td>[[${user.rolex}]]</td>
                             <td >
-                                <a th:if="${user.enabled == true}" class="fas fa-check-circle icon-green" ></a>
-                                <a th:if="${ user.enabled == false}" class="fas fa-check-circle icon-dark" ></a></td>
-                            <td class="color-primary"><a th:href="@{'/users/edit/'+${user.id}}"><span class="badge badge-primary">Edit</span></a>  &nbsp;<a th:href="@{'/users/delete/'+${user.id}}" class="link-delete"><span class="badge badge-danger"> Delete</span> </a></td>
+                                <a th:if="${user.enabled == true}" class="fas fa-check-circle icon-green" th:href="@{'/users/'
+                                +${user.id}+'/enabled/false'}" title="disable this user" ></a>
+                                <a th:if="${ user.enabled == false}" title="enable this user" class="fas fa-circle icon-dark"  th:href="@{'/users/'
+                                +${user.id}+'/enabled/true'}" ></a></td>
+                            <td class="color-primary"><a th:href="@{'/users/edit/'+${user.id}}"><span class="badge badge-primary">Edit</span></a>  &nbsp;<a th:href="@{'/users/delete/'+${user.id}}" th:userId="*{user.id}" class="link-delete"><span class="badge badge-danger"> Delete</span> </a></td>
                         </tr>
 
 
@@ -125,12 +127,12 @@
         $('.link-delete').on("click",function (e){
             e.preventDefault();
             //get User name
-            linknam=$(".uname")
-            var userName=linknam.attr("userName");
-           //get the current button clicked
+
+            //get the current button clicked
             link=$(this)
+            id=link.attr('userId')
             $("#yesbtn").attr("href",link.attr("href"))
-            $("#modalBody").text("Are you sure you want to delete: "+userName+" ?!");
+            $("#modalBody").text("Are you sure you want to delete: "+id+" ?!");
             // alert($(this).attr('href'));
             $("#confirmModal").modal();
         })

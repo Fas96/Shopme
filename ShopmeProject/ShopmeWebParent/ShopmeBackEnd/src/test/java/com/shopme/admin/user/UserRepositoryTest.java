@@ -22,6 +22,10 @@ public class UserRepositoryTest {
     private TestEntityManager testEntityManager;
 
     @Test
+    public void testDisable(){
+        userRepository.updateEnabledStatus(1,false);
+    }
+    @Test
     public  void testCountBYId(){
         Long count= userRepository.countById(100);
         assertThat(count).isNotNull();
