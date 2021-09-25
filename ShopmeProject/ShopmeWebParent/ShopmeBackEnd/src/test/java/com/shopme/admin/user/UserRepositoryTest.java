@@ -21,6 +21,11 @@ public class UserRepositoryTest {
     @Autowired
     private TestEntityManager testEntityManager;
 
+    @Test
+    public  void testCountBYId(){
+        Long count= userRepository.countById(100);
+        assertThat(count).isNotNull();
+    }
 
     @Test
     public  void testGetUserBYEmail(){

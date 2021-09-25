@@ -24,9 +24,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
     @Autowired
     private UserDetailsService userDetailsService;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/login*").permitAll();
+        http .csrf().disable()
+                .authorizeRequests()
+                .antMatchers("/ShopmeAdmin/users/*","/login","/users/check_email","ShopmeAdmin/*","/","index","/css/*","/js/*").permitAll();
     }
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
