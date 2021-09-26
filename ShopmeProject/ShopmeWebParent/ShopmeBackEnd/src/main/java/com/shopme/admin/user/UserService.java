@@ -33,7 +33,7 @@ public class UserService {
         return (List<Role>) rolRep.findAll();
     }
 
-    public void save(User user) {
+    public User save(User user) {
         boolean isUpdatingUser=user.getId()!=null;
         if(isUpdatingUser){
             User gotuser = userRepository.findById(user.getId()).get();
@@ -45,7 +45,7 @@ public class UserService {
         }else{ user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));}
 
 
-        userRepository.save(user);
+        return userRepository.save(user);
     }
     public void updateUserEnabledStatus(Integer id,boolean enabled){
         userRepository.updateEnabledStatus(id, enabled);

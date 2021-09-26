@@ -41,8 +41,12 @@ public class User {
         this.firstname = firstname;
         this.lastname = lastname;
     }
+    @Transient
+    public String getPhotosImagePath(){
+        if(id==null || photos==null) return "/images/default-user.png";
 
-
+        return "/users-photos/"+this.id+"/"+this.photos;
+    }
     public Integer getId() {
         return id;
     }
