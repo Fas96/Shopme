@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class MainController {
     @GetMapping("/")
     public String viewHomePage(){
-        System.out.println("---------page accesssed---------");
         return "index";
     }
 }

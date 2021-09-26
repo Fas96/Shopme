@@ -1,18 +1,19 @@
 package com.shopme.admin.controller;
 
 import com.shopme.admin.entity.User;
+import com.shopme.admin.formatter.FileUploadUtil;
 import com.shopme.admin.formatter.UserNotFoundException;
 import com.shopme.admin.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
 import java.util.NoSuchElementException;
 
 @Controller
@@ -67,9 +68,14 @@ public class UserController {
     }
 
     @PostMapping("/users/save")
-    public String saveUser(User user, RedirectAttributes redirectAttributes){
-        userService.save(user);
-        redirectAttributes.addFlashAttribute("sMessage","User has been saved Successfully");
+    public String saveUser(User user, RedirectAttributes redirectAttributes, @RequestParam("image") MultipartFile multipartFile) throws IOException {
+
+        System.out.println("==============debug==================");
+        String fileName= StringUtils.cleanPath(multipartFile.getOriginalFilename());
+        String uploadDir= "users-photos";
+        FileUploadUtil.saveFile(uploadDir,fileName,multipartFile);
+        //userService.save(user);
+       // redirectAttributes.addFlashAttribute("sMessage","User has been saved Successfully");
         return "redirect:/users";
     }
 
