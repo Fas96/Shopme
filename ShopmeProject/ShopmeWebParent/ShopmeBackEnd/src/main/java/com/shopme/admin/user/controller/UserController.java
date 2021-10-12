@@ -1,20 +1,22 @@
-package com.shopme.admin.controller;
+package com.shopme.admin.user.controller;
 
-import com.shopme.admin.entity.User;
 import com.shopme.admin.formatter.FileUploadUtil;
-import com.shopme.admin.formatter.UserNotFoundException;
+import com.shopme.admin.user.UserNotFoundException;
 import com.shopme.admin.user.UserService;
+
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.shopme.common.entity.Role;
+import com.shopme.common.entity.User;
 import java.io.IOException;
-import java.util.NoSuchElementException;
+import java.util.List;
 
 @Controller
 public class UserController {
@@ -31,21 +33,27 @@ public class UserController {
 
     @GetMapping("/users/new")
     public String newUser(@ModelAttribute("user") User user, Model model) {
+        List<Role> roles = userService.roleList();
+
         user.setEnabled(true);
-        model.addAttribute("rolesList", userService.roleList());
+
+        model.addAttribute("rolesList", roles);
+
         model.addAttribute("pageTitle", "Create New User");
         return "users_form";
     }
 
     @GetMapping("users/edit/{id}")
     public String editUser(@PathVariable("id") Integer id, Model model, RedirectAttributes redirectAttributes) {
-        try {
 
-            model.addAttribute("rolesList", userService.roleList());
-            model.addAttribute("rolesList", userService.roleList());
+        try {
+            List<Role> roles = userService.roleList();
             User user = userService.getUser(id);
+
             model.addAttribute("user", user);
             model.addAttribute("pageTitle", "Edit User");
+            model.addAttribute("rolesList", roles);
+
             return "users_form";
         } catch (UserNotFoundException e) {
             redirectAttributes.addFlashAttribute("sMessage", e.getMessage());
@@ -71,15 +79,29 @@ public class UserController {
     public String saveUser(User user, RedirectAttributes redirectAttributes, @RequestParam("image") MultipartFile multipartFile) throws IOException {
 
         if(!multipartFile.isEmpty()){
-        String fileName= StringUtils.cleanPath(multipartFile.getOriginalFilename());
+            String fileName= StringUtils.cleanPath(multipartFile.getOriginalFilename());
             user.setPhotos(fileName);
+            System.out.println("============user roles check=============");
+            System.out.println(user.getRoles());
+            System.out.println("--------------------------");
             User savedUser = userService.save(user);
+
             String uploadDir= "users-photos/"+savedUser.getId();
+            //clean-> delete old files in directory before saving file to directory
+            FileUploadUtil.clearDir(uploadDir);
             FileUploadUtil.saveFile(uploadDir,fileName,multipartFile);
         }else{
+
+            System.out.println("============user roles check=============");
+            System.out.println(user.getRoles());
+            System.out.println("--------------------------");
+            if(user.getPhotos().isEmpty())user.setPhotos(null);
+            user.setRoles(user.getRoles());
+
             userService.save(user);
+
         }
-        //userService.save(user);
+
         redirectAttributes.addFlashAttribute("sMessage","User has been saved Successfully");
         return "redirect:/users";
     }

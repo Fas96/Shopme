@@ -62,9 +62,8 @@
                         <tr>
                             <th>#</th>
                             <th>Photo</th>
+                            <th>Name</th>
                             <th>Email</th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
                             <th>Roles</th>
                             <th>Enabled</th>
                             <th>Action</th>
@@ -73,18 +72,17 @@
                         <tbody>
                         <tr th:each="user: ${users}">
                             <th scope="row">[[${user.id}]]</th>
-                            <td><span th:if="${user.photos==null}" class="fas fa-portrait fa-3x icon-silver"></span>
-                             <img  th:if="${user.photos!=null}" th:src="@{${user.getPhotosImagePath}}"> </td>
+                            <td><span th:if="${user.getPhotos()==null}" class="fas fa-portrait fa-3x icon-silver"></span>
+                             <img  th:if="${user.getPhotos()!=null}" th:src="@{${user.getPhotosImagePath()}}" style="width: 100px;"> </td>
+                            <td class="uname" th:userName="${user.getFullName()}">[[${user.getFullName()}]]</td>
                             <td>[[${user.Email}]]</td>
-                            <td class="uname" th:userName="${user.firstname}">[[${user.firstname}]]</td>
-                            <td>[[${user.lastname}]] </td>
-                            <td>[[${user.rolex}]]</td>
+                            <td>[[${user.getRoles()}]]</td>
                             <td >
-                                <a th:if="${user.enabled == true}" class="fas fa-check-circle icon-green" th:href="@{'/users/'
-                                +${user.id}+'/enabled/false'}" title="disable this user" ></a>
-                                <a th:if="${ user.enabled == false}" title="enable this user" class="fas fa-circle icon-dark"  th:href="@{'/users/'
-                                +${user.id}+'/enabled/true'}" ></a></td>
-                            <td class="color-primary"><a th:href="@{'/users/edit/'+${user.id}}"><span class="badge badge-primary">Edit</span></a>  &nbsp;<a th:href="@{'/users/delete/'+${user.id}}" th:userId="*{user.id}" class="link-delete"><span class="badge badge-danger"> Delete</span> </a></td>
+                                <a th:if="${user.isEnabled() == true}" class="fas fa-check-circle icon-green" th:href="@{'/users/'
+                                +${user.getId()}+'/enabled/false'}" title="disable this user" ></a>
+                                <a th:if="${ user.isEnabled() == false}" title="enable this user" class="fas fa-circle icon-dark"  th:href="@{'/users/'
+                                +${user.getId()}+'/enabled/true'}" ></a></td>
+                            <td class="color-primary"><a th:href="@{'/users/edit/'+${user.getId()}}"><span class="badge badge-primary">Edit</span></a>  &nbsp;<a th:href="@{'/users/delete/'+${user.getId()}}" th:userId="*{user.getId()}" class="link-delete"><span class="badge badge-danger"> Delete</span> </a></td>
                         </tr>
 
 

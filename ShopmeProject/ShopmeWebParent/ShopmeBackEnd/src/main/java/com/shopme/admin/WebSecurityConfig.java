@@ -1,4 +1,4 @@
-package com.shopme.security;
+package com.shopme.admin;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +14,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
-@ComponentScan(basePackages = { "com.shopme" })
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -22,8 +21,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     PasswordEncoder getEncoder() {
         return new BCryptPasswordEncoder();
     }
-    @Autowired
-    private UserDetailsService userDetailsService;
+
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -31,16 +29,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/ShopmeAdmin/users/*","/login","/users/check_email","ShopmeAdmin/*","/","index","/css/*","/js/*").permitAll();
     }
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(authProvider());
-    }
-    @Bean
-    public DaoAuthenticationProvider authProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(getEncoder());
-        return authProvider;
-    }
+
+
 
 }

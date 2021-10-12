@@ -14,9 +14,9 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="ShopmeBackEnd" options="" />
-      <module name="ShopmeCommon" options="" />
-      <module name="ShopmeFrontEnd" options="" />
+      <module name="ShopmeBackEnd" options="-parameters" />
+      <module name="ShopmeCommon" options="-parameters" />
+      <module name="ShopmeFrontEnd" options="-parameters" />
       <module name="ShopmeWebParent" options="-parameters" />
     </option>
   </component>

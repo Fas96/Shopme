@@ -1,4 +1,4 @@
-package com.shopme.admin.controller;
+package com.shopme.admin.user.controller;
 
 import com.shopme.admin.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

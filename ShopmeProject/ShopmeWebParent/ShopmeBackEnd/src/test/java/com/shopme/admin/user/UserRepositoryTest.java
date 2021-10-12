@@ -1,14 +1,13 @@
 package com.shopme.admin.user;
-import com.shopme.admin.entity.User;
+
 import com.shopme.common.entity.Role;
+import com.shopme.common.entity.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.annotation.Rollback;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -39,7 +38,7 @@ public class UserRepositoryTest {
     @Test
     public void testCreateFirstUserWithOneRole() {
         Role role = testEntityManager.find(Role.class, 1);
-        User user = new User("firibu.anyass@gmail.com", "1234", "Fas", "Bhim");
+        User user = new User("sdddd.anyass@gmail.com", "1234", "Fas", "Bhim");
         user.addRole(role);
         User savedUser = userRepository.save(user);
         assertThat(savedUser.getId()).isGreaterThan(0);
@@ -50,7 +49,7 @@ public class UserRepositoryTest {
     public void testCreateFirstUserWithTwoRole() {
         Role roleEd = testEntityManager.find(Role.class, 3);
         Role roleAsis = testEntityManager.find(Role.class, 5);
-        User user = new User("anyass@gmail.com", "1234", "Fas", "Bhim");
+        User user = new User("anydddass@gmail.com", "1234", "Fas", "Bhim");
         user.addRole(roleEd);
         user.addRole(roleAsis);
         User savedUser = userRepository.save(user);
@@ -75,7 +74,7 @@ public class UserRepositoryTest {
     public void testUpdateUserById() {
         User ur = userRepository.findById(1).get();
         ur.setEnabled(true);
-        ur.setFirstname("Changed Fas");
+        ur.setFirstName("Changed Fas");
         userRepository.save(ur);
     }
 

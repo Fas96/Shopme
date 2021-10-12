@@ -2,6 +2,7 @@ package com.shopme.admin.formatter;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -23,4 +24,23 @@ public class FileUploadUtil {
         }
 
     }
+
+    public  static void clearDir(String dir){
+        Path dirPath=Paths.get(dir);
+        try{
+            Files.list(dirPath).forEach(file->{
+                if(!Files.isDirectory(file)){
+                    try {
+                        Files.delete(file);
+                    } catch (IOException e) {
+                        System.out.println("Could not delete files");
+                    }
+                }
+            });
+        } catch (IOException exception) {
+//            exception.printStackTrace();
+            System.out.println("Could not list the directoriies!!"+ dirPath);
+        }
+    }
+
 }

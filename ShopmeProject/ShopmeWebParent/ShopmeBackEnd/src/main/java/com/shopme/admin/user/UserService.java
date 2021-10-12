@@ -1,17 +1,16 @@
 package com.shopme.admin.user;
 
-import com.shopme.admin.entity.User;
-import com.shopme.admin.formatter.UserNotFoundException;
-import com.shopme.common.entity.Role;
+
+
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import com.shopme.common.entity.Role;
+import com.shopme.common.entity.User;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -26,8 +25,8 @@ public class UserService {
 
     private BCryptPasswordEncoder password;
 
-    public Iterable<User> userList(){
-        return  userRepository.findAll();
+    public List<User> userList(){
+        return (List<User>) userRepository.findAll();
     }
     public List<Role> roleList(){
         return (List<Role>) rolRep.findAll();
@@ -42,7 +41,10 @@ public class UserService {
             }else{
                 user.setPassword(bCryptPasswordEncoder.encode(gotuser.getPassword()));
             }
-        }else{ user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));}
+        }else{
+
+            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        }
 
 
         return userRepository.save(user);
