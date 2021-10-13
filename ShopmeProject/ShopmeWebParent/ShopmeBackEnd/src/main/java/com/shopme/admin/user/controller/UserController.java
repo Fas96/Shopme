@@ -22,39 +22,39 @@ import java.util.List;
 public class UserController {
 
     @Autowired
-    private UserService userService;
+    private UserService service;
 
     @GetMapping("/users")
     public String usersList(Model model) {
-        model.addAttribute("users", userService.userList());
+        model.addAttribute("users", service.userList());
         model.addAttribute("pageTitle", "Users List");
         return "users";
     }
 
     @GetMapping("/users/new")
     public String newUser(@ModelAttribute("user") User user, Model model) {
-        List<Role> roles = userService.roleList();
+        List<Role> listRoles = service.listRoles();
 
         user.setEnabled(true);
 
-        model.addAttribute("rolesList", roles);
+        model.addAttribute("listRoles", listRoles);
 
         model.addAttribute("pageTitle", "Create New User");
-        return "users_form";
+        return "users/user_form";
     }
 
     @GetMapping("users/edit/{id}")
     public String editUser(@PathVariable("id") Integer id, Model model, RedirectAttributes redirectAttributes) {
 
         try {
-            List<Role> roles = userService.roleList();
-            User user = userService.getUser(id);
+            User user = service.get(id);
+
+            List<Role> listRoles =service.listRoles();
 
             model.addAttribute("user", user);
             model.addAttribute("pageTitle", "Edit User");
-            model.addAttribute("rolesList", roles);
-
-            return "users_form";
+            model.addAttribute("listRoles", listRoles);
+            return "users/user_form";
         } catch (UserNotFoundException e) {
             redirectAttributes.addFlashAttribute("sMessage", e.getMessage());
             return "redirect:/users";
@@ -66,7 +66,7 @@ public class UserController {
     @GetMapping("users/delete/{id}")
     public String deleteUser(@PathVariable("id") Integer id,RedirectAttributes redirectAttributes) throws UserNotFoundException {
        try {
-           userService.deleteUser(id);
+           service.deleteUser(id);
            redirectAttributes.addFlashAttribute("sMessage", "Successfully Deleted");
 
        }catch (UserNotFoundException e){
@@ -81,10 +81,9 @@ public class UserController {
         if(!multipartFile.isEmpty()){
             String fileName= StringUtils.cleanPath(multipartFile.getOriginalFilename());
             user.setPhotos(fileName);
-            System.out.println("============user roles check=============");
-            System.out.println(user.getRoles());
-            System.out.println("--------------------------");
-            User savedUser = userService.save(user);
+
+
+            User savedUser = service.save(user);
 
             String uploadDir= "users-photos/"+savedUser.getId();
             //clean-> delete old files in directory before saving file to directory
@@ -92,13 +91,11 @@ public class UserController {
             FileUploadUtil.saveFile(uploadDir,fileName,multipartFile);
         }else{
 
-            System.out.println("============user roles check=============");
-            System.out.println(user.getRoles());
-            System.out.println("--------------------------");
-            if(user.getPhotos().isEmpty())user.setPhotos(null);
-            user.setRoles(user.getRoles());
 
-            userService.save(user);
+            if(user.getPhotos().isEmpty())user.setPhotos(null);
+
+
+            service.save(user);
 
         }
 
@@ -110,7 +107,7 @@ public class UserController {
     @GetMapping("users/{id}/enabled/{status}")
     public String updateUserEnableStatus(@PathVariable("id") Integer id,@PathVariable("status") boolean status, RedirectAttributes redirectAttributes){
 
-        userService.updateUserEnabledStatus(id,status);
+        service.updateUserEnabledStatus(id,status);
         String msg="";
         if(status){
             msg="User "+id +" enable status is enabled";

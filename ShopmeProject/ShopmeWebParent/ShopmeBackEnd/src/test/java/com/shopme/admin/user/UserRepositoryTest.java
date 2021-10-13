@@ -9,6 +9,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.annotation.Rollback;
 
+import java.util.Set;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
@@ -39,7 +41,7 @@ public class UserRepositoryTest {
     public void testCreateFirstUserWithOneRole() {
         Role role = testEntityManager.find(Role.class, 1);
         User user = new User("sdddd.anyass@gmail.com", "1234", "Fas", "Bhim");
-        user.addRole(role);
+        user.addRole( role);
         User savedUser = userRepository.save(user);
         assertThat(savedUser.getId()).isGreaterThan(0);
     }

@@ -11,6 +11,9 @@ import com.shopme.common.entity.Role;
 import com.shopme.common.entity.User;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -23,17 +26,17 @@ public class UserService {
     private BCryptPasswordEncoder bCryptPasswordEncoder=new BCryptPasswordEncoder();
 
 
-    private BCryptPasswordEncoder password;
-
     public List<User> userList(){
         return (List<User>) userRepository.findAll();
     }
-    public List<Role> roleList(){
+    public List<Role> listRoles(){
         return (List<Role>) rolRep.findAll();
     }
 
+
     public User save(User user) {
         boolean isUpdatingUser=user.getId()!=null;
+
         if(isUpdatingUser){
             User gotuser = userRepository.findById(user.getId()).get();
             if(user.getPassword().isEmpty()){
@@ -41,18 +44,29 @@ public class UserService {
             }else{
                 user.setPassword(bCryptPasswordEncoder.encode(gotuser.getPassword()));
             }
+
         }else{
 
             user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         }
 
+        User newUser=new User(user.getFirstName(),user.getLastName(),user.getEmail(),user.getPassword(),user.isEnabled());
+        newUser.setId(user.getId());
+        newUser.getRoles().addAll(user.getRoles().stream().map(v->{
+            Optional<Role> r=rolRep.findById(v.getId()) ;
+            System.out.println("===============++++");
+            System.out.println(r);
+            v.getUsers().add(newUser);
+            return v;
+        }).collect(Collectors.toList()));
 
-        return userRepository.save(user);
+
+        return userRepository.saveAndFlush(newUser);
     }
     public void updateUserEnabledStatus(Integer id,boolean enabled){
         userRepository.updateEnabledStatus(id, enabled);
     }
-    public boolean isEmailUnique(String email,Integer id){
+    public boolean isEmailUnique(Integer id,String email){
         User userByEmail = userRepository.getUserByEmail(email);
 
         if (userByEmail==null) return true;
@@ -75,7 +89,7 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    public User getUser(Integer id) throws UserNotFoundException {
+    public User get(Integer id) throws UserNotFoundException {
         try {
             return userRepository.findById(id).get();
         }catch (NoSuchElementException e){

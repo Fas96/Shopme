@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
 @EntityScan({"com.shopme.common.entity"})
-@ComponentScan("com.shopme")
+@ComponentScan(basePackages = {"com.shopme.common.entity","com.shopme"})
 public class ShopmeBackEndApplication {
 
     public static void main(String[] args) {

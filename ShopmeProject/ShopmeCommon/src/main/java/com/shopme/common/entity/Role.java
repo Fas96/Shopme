@@ -1,6 +1,8 @@
 package com.shopme.common.entity;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Entity
@@ -10,15 +12,31 @@ public class Role extends IdBasedEntity {
     @Column(length = 40, nullable = false, unique = true)
     private String name;
 
-    @Column(length = 150, nullable = false)
+    @Column(length = 150 ,nullable = true)
     private String description;
 
     public Role() {
     }
 
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id",referencedColumnName ="id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
+    )
+    private Set<User> user = new HashSet<>();
+
+    public Set<User> getUsers() {
+        return user ;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.user  = users;
+    }
+
     public Role(Integer id) {
         this.id = id;
-    }
+   }
 
     public Role(String name) {
         this.name = name;
@@ -52,6 +70,7 @@ public class Role extends IdBasedEntity {
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         return result;
     }
+
 
     @Override
     public boolean equals(Object obj) {

@@ -2,18 +2,13 @@ package com.shopme.common.entity;
 
 
 
+import org.hibernate.annotations.Cascade;
+
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "users")
@@ -36,22 +31,36 @@ public class User extends IdBasedEntity {
 
     private boolean enabled;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "users_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
+    @ManyToMany(mappedBy ="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Role> roles = new HashSet<>();
 
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+    public void addRole(Role role) {
+        this.roles.add(role);
+    }
     public User() {
     }
 
-    public User(String email, String password, String firstName, String lastName) {
+    public User(String firstName, String lastName,String email, String password ) {
         this.email = email;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
+
+    }
+
+    public User(String firstName, String lastName,String email, String password,boolean isEnabled) {
+        this.email = email;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.enabled=isEnabled;
     }
 
     public String getEmail() {
@@ -102,23 +111,13 @@ public class User extends IdBasedEntity {
         this.enabled = enabled;
     }
 
-    public Set<Role> getRoles() {
-        return roles;
-    }
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
-
-    public void addRole(Role role) {
-        this.roles.add(role);
-    }
 
     @Override
     public String toString() {
-        return "User [id=" + id + ", email=" + email + ", firstName=" + firstName + ", lastName=" + lastName
-                + ", roles=" + roles + "]";
+        return "User [id=" + id + ", email=" + email + ", firstName=" + firstName + ", lastName=" + lastName +"]";
     }
+
     @Transient
     public String getPhotosImagePath() {
         if (id == null || photos == null) return "/images/default-user.png";
@@ -126,21 +125,12 @@ public class User extends IdBasedEntity {
         return "/users-photos/"+this.id+"/"+this.photos;
     }
 
+
+
     @Transient
     public String getFullName() {
         return firstName + " " + lastName;
     }
 
-    public boolean hasRole(String roleName) {
-        Iterator<Role> iterator = roles.iterator();
 
-        while (iterator.hasNext()) {
-            Role role = iterator.next();
-            if (role.getName().equals(roleName)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
 }
