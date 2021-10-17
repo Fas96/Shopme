@@ -17,11 +17,9 @@ public class ThymeleafViewResolverConfig {
     @Bean
     public SpringResourceTemplateResolver templateResolver() {
         SpringResourceTemplateResolver  templateResolver = new SpringResourceTemplateResolver ();
-        templateResolver.setPrefix("classpath:templates/");
+        templateResolver.setPrefix("classpath:/template/");
         templateResolver.setCharacterEncoding("UTF-8");
         templateResolver.setSuffix(".html");
-        templateResolver.setTemplateMode("LEGACYHTML5");
-//        templateResolver.setCacheable(isCache);
         return templateResolver;
     }
 
@@ -30,8 +28,6 @@ public class ThymeleafViewResolverConfig {
         SpringTemplateEngine templateEngine = new SpringTemplateEngine();
         templateEngine.setTemplateResolver(templateResolver());
         templateEngine.setTemplateEngineMessageSource(messageSource);
-        //templateEngine.addDialect(new LayoutDialect());
-
         return templateEngine;
     }
 

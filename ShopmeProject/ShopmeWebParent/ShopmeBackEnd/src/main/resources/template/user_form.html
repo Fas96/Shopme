@@ -28,7 +28,7 @@
             </button>
             <div  class="collapse navbar-collapse" id="topNavbar">
                 <ul class="navbar-nav">
-                    <li class="nav-item"><a class="nav-link" th:href="@{/templates/users}">Users</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/users}">Users</a></li>
                     <li class="nav-item"><a class="nav-link" th:href="@{/categories}">Categories</a></li>
                     <li class="nav-item"><a class="nav-link" th:href="@{/brands}">Brands</a></li>
                     <li class="nav-item"><a class="nav-link" th:href="@{/products}">Products</a></li>
@@ -50,9 +50,7 @@
     </div>
 
     <div>
-        <form th:action="@{/users/save}" method="post" style="max-width: 700px; margin: 0 auto"
-              enctype="multipart/form-data"
-              th:object="${user}" onsubmit="return checkEmailUnique(this);">
+        <form th:action="@{/users/save}" method="post" style="max-width: 700px; margin: 0 auto" enctype="multipart/form-data"  th:object="${user}" onsubmit="return checkEmailUnique(this);">
             <input type="hidden" th:field="*{id}" />
             <div class="border border-secondary rounded p-3">
                 <div class="form-group row">
@@ -91,11 +89,8 @@
                     <label class="col-sm-4 col-form-label">Roles:</label>
                     <div class="col-sm-8">
                         <th:block th:each="role : ${listRoles}">
-                            <input type="checkbox" th:field="*{roles}"
-                                   th:text="${role.name}"
-                                   th:value="${role.id}"
-                                   class="m-2"
-                            />
+                            <input type="checkbox"   th:id="${role.name+'_'+ role.id}" name="roles[]"   th:text="${role.name}" th:value="${role}" class="m-2"
+                                   th:checked="${#lists.contains(itemIds, role.id)}"/>
                             - <small>[[${role.description}]]</small>
                             <br/>
                         </th:block>
@@ -180,6 +175,11 @@
         reader.readAsDataURL(file);
     }
     function checkEmailUnique(form){
+
+        var str=$("input:checkbox[name=type]:checked").map(function(){return $(this).val()}).get();
+        alert(str)
+
+        alert($('input:checkbox').filter(':checked'));
 
         var csrf=$("input[name='_csrf']").val();
         var url="[[@{/users/check_email}]]";

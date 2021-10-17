@@ -2,17 +2,17 @@ package com.shopme.common.entity;
 
 
 
-import org.hibernate.annotations.Cascade;
-
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.io.Serializable;
+import java.util.*;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "users")
-public class User extends IdBasedEntity {
+public class User  implements Serializable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    protected Integer id;
 
     @Column(length = 128, nullable = false, unique = true)
     private String email;
@@ -31,38 +31,68 @@ public class User extends IdBasedEntity {
 
     private boolean enabled;
 
-    @ManyToMany(mappedBy ="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
-    public void addRole(Role role) {
-        this.roles.add(role);
-    }
     public User() {
     }
 
-    public User(String firstName, String lastName,String email, String password ) {
+    public User(String email, String password, String firstName, String lastName) {
         this.email = email;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
-
     }
 
-    public User(String firstName, String lastName,String email, String password,boolean isEnabled) {
-        this.email = email;
-        this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.enabled=isEnabled;
+
+
+    public void addRole(Role role) {
+
+        this.roles.add(role);
+    }
+    public void addRoles(Set<Role> role) {
+        this.roles.addAll(role);
     }
 
+    @Override
+    public String toString() {
+        return "User [id=" + id + ", email=" + email + ", firstName=" + firstName + ", lastName=" + lastName
+                + ", roles=" + roles + "]";
+    }
+
+
+    @Transient
+    public String getPhotosImagePath() {
+        if (id == null || photos == null) return "/images/default-user.png";
+
+        return "/users-photos/"+this.id+"/"+this.photos;
+    }
+
+
+
+
+    public boolean hasRole(String roleName) {
+        Iterator<Role> iterator = roles.iterator();
+
+        while (iterator.hasNext()) {
+            Role role = iterator.next();
+            if (role.getName().equals(roleName)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
     public String getEmail() {
         return email;
     }
@@ -111,26 +141,24 @@ public class User extends IdBasedEntity {
         this.enabled = enabled;
     }
 
+    public Set<Role> getRoles() {
+        return roles;
+    }
 
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
 
     @Override
-    public String toString() {
-        return "User [id=" + id + ", email=" + email + ", firstName=" + firstName + ", lastName=" + lastName +"]";
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+        User user = (User) o;
+        return Objects.equals(getId(), user.getId());
     }
 
-    @Transient
-    public String getPhotosImagePath() {
-        if (id == null || photos == null) return "/images/default-user.png";
-
-        return "/users-photos/"+this.id+"/"+this.photos;
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
     }
-
-
-
-    @Transient
-    public String getFullName() {
-        return firstName + " " + lastName;
-    }
-
-
 }

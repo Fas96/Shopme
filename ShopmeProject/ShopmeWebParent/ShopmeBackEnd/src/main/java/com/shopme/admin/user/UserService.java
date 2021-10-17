@@ -4,7 +4,9 @@ package com.shopme.admin.user;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.shopme.common.entity.Role;
@@ -19,83 +21,119 @@ import java.util.stream.Collectors;
 @Transactional
 public class UserService {
     @Autowired
-    private UserRepository userRepository;
+    private UserRepository userRepo;
+
     @Autowired
-    private RoleRepository rolRep;
+    private RoleRepository roleRepo;
+    @Autowired
+    RoleService Rservice;
 
-    private BCryptPasswordEncoder bCryptPasswordEncoder=new BCryptPasswordEncoder();
+    private PasswordEncoder passwordEncoder=new BCryptPasswordEncoder();
 
-
-    public List<User> userList(){
-        return (List<User>) userRepository.findAll();
+    public User getByEmail(String email) {
+        return userRepo.getUserByEmail(email);
     }
-    public List<Role> listRoles(){
-        return (List<Role>) rolRep.findAll();
+
+    public List<User> listAll() {
+        return (List<User>) userRepo.findAll(Sort.by("firstName").ascending());
+    }
+
+
+    public List<Role> listRoles() {
+        return (List<Role>) roleRepo.findAll();
     }
 
 
     public User save(User user) {
-        boolean isUpdatingUser=user.getId()!=null;
+        boolean isUpdatingUser = (user.getId() != null);
+        User nUser= new User();
+        if (isUpdatingUser) {
+            User existingUser = userRepo.findById(user.getId()).get();
 
-        if(isUpdatingUser){
-            User gotuser = userRepository.findById(user.getId()).get();
-            if(user.getPassword().isEmpty()){
-                gotuser.setPassword(user.getPassword());
-            }else{
-                user.setPassword(bCryptPasswordEncoder.encode(gotuser.getPassword()));
+            if (user.getPassword().isEmpty()) {
+                nUser.setPassword(existingUser.getPassword());
+            } else {
+                encodePassword(user);
             }
 
-        }else{
-
-            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        } else {
+            encodePassword(user);
         }
 
-        User newUser=new User(user.getFirstName(),user.getLastName(),user.getEmail(),user.getPassword(),user.isEnabled());
-        newUser.setId(user.getId());
-        newUser.getRoles().addAll(user.getRoles().stream().map(v->{
-            Optional<Role> r=rolRep.findById(v.getId()) ;
-            System.out.println("===============++++");
-            System.out.println(r);
-            v.getUsers().add(newUser);
-            return v;
-        }).collect(Collectors.toList()));
+
+        nUser.setId(user.getId());
+        nUser.setEmail(user.getEmail());
+        if(user.getPassword() != null){nUser.setPassword(user.getPassword());};
+        nUser.setFirstName(user.getFirstName());
+        nUser.setLastName(user.getLastName());
+        nUser.setEnabled(user.isEnabled());
+        nUser.setPhotos(user.getPhotos());
 
 
-        return userRepository.saveAndFlush(newUser);
+
+        return  userRepo.saveAndFlush(nUser);
     }
-    public void updateUserEnabledStatus(Integer id,boolean enabled){
-        userRepository.updateEnabledStatus(id, enabled);
+
+    public User updateAccount(User userInForm) {
+        User userInDB = userRepo.findById(userInForm.getId()).get();
+
+        if (!userInForm.getPassword().isEmpty()) {
+            userInDB.setPassword(userInForm.getPassword());
+            encodePassword(userInDB);
+        }
+
+        if (userInForm.getPhotos() != null) {
+            userInDB.setPhotos(userInForm.getPhotos());
+        }
+
+        userInDB.setFirstName(userInForm.getFirstName());
+        userInDB.setLastName(userInForm.getLastName());
+
+        return userRepo.save(userInDB);
     }
-    public boolean isEmailUnique(Integer id,String email){
-        User userByEmail = userRepository.getUserByEmail(email);
 
-        if (userByEmail==null) return true;
+    private void encodePassword(User user) {
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encodedPassword);
+    }
 
-        boolean isCreatingNew=(id==null);
+    public boolean isEmailUnique(Integer id, String email) {
+        User userByEmail = userRepo.getUserByEmail(email);
 
-        if(isCreatingNew){
-            if(userByEmail!=null){return false;}
-        }else{
-            return userByEmail.getId() == id;
+        if (userByEmail == null) return true;
+
+        boolean isCreatingNew = (id == null);
+
+        if (isCreatingNew) {
+            if (userByEmail != null) return false;
+        } else {
+            if (userByEmail.getId() != id) {
+                return false;
+            }
         }
 
         return true;
     }
 
-    public void deleteUser(Integer id) throws UserNotFoundException {
-        if(userRepository.countById(id)==0||userRepository.countById(id)==null){
-            throw  new UserNotFoundException("The user with id: "+id+" could not be found");
-        }
-        userRepository.deleteById(id);
-    }
-
     public User get(Integer id) throws UserNotFoundException {
         try {
-            return userRepository.findById(id).get();
-        }catch (NoSuchElementException e){
-            throw  new UserNotFoundException("The user with id: "+id+" could not be found");
-           }
+            return userRepo.findById(id).get();
+        } catch (NoSuchElementException ex) {
+            throw new UserNotFoundException("Could not find any user with ID " + id);
+        }
+    }
+
+    public void delete(Integer id) throws UserNotFoundException {
+        Long countById = userRepo.countById(id);
+        if (countById == null || countById == 0) {
+            throw new UserNotFoundException("Could not find any user with ID " + id);
         }
 
+        userRepo.deleteById(id);
+    }
+
+    public void updateUserEnabledStatus(Integer id, boolean enabled) {
+        userRepo.updateEnabledStatus(id, enabled);
+    }
 
 }

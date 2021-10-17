@@ -1,46 +1,37 @@
 package com.shopme.common.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.io.Serializable;
+import java.util.*;
 
 
 @Entity
 @Table(name = "roles")
-public class Role extends IdBasedEntity {
+public class Role implements Serializable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    protected Integer id;
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
     @Column(length = 40, nullable = false, unique = true)
     private String name;
 
-    @Column(length = 150 ,nullable = true)
+
+
+    @Column(length = 150, nullable = false)
     private String description;
 
     public Role() {
     }
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "users_roles",
-            joinColumns = @JoinColumn(name = "user_id",referencedColumnName ="id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
-    )
-    private Set<User> user = new HashSet<>();
-
-    public Set<User> getUsers() {
-        return user ;
-    }
-
-    public void setUsers(Set<User> users) {
-        this.user  = users;
-    }
-
-    public Role(Integer id) {
-        this.id = id;
-   }
-
-    public Role(String name) {
-        this.name = name;
-    }
 
     public Role(String name, String description) {
         this.name = name;
@@ -71,7 +62,6 @@ public class Role extends IdBasedEntity {
         return result;
     }
 
-
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -91,8 +81,6 @@ public class Role extends IdBasedEntity {
 
     @Override
     public String toString() {
-        return this.name;
+        return  name +"_"  ;
     }
-
-
 }

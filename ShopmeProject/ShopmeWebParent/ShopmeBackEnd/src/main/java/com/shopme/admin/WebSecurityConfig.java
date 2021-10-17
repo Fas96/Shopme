@@ -16,18 +16,25 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-//    @Bean
-//    PasswordEncoder getEncoder() {
-//        return new BCryptPasswordEncoder();
-//    }
-//
-//
-//    @Override
-//    protected void configure(HttpSecurity http) throws Exception {
-//        http .csrf().disable()
-//                .authorizeRequests()
-//                .antMatchers("*/*/user_form","/ShopmeAdmin/*","/users/*","/ShopmeAdmin/users/*","/login","/users/check_email","ShopmeAdmin/*","/","index","/css/*","/js/*").permitAll();
-//    }
+     @Bean
+  PasswordEncoder getEncoder() {
+      return new BCryptPasswordEncoder();
+   }
+
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+
+                .csrf().disable()
+                .authorizeRequests()
+                .anyRequest().permitAll()
+                .antMatchers("/","index","/css/*","/js/*").permitAll()
+                .antMatchers("/users","/ShopmeAdmin/**","/login","/**").permitAll();
+
+
+
+   }
 
 
 
