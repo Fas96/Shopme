@@ -31,8 +31,7 @@ public class User  implements Serializable {
 
     private boolean enabled;
 
-    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-    @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @ManyToMany(mappedBy = "users",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private Set<Role> roles = new HashSet<>();
 
     public User() {
@@ -73,10 +72,8 @@ public class User  implements Serializable {
 
 
     public boolean hasRole(String roleName) {
-        Iterator<Role> iterator = roles.iterator();
 
-        while (iterator.hasNext()) {
-            Role role = iterator.next();
+        for (Role role : roles) {
             if (role.getName().equals(roleName)) {
                 return true;
             }
@@ -152,8 +149,7 @@ public class User  implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof User)) return false;
-        User user = (User) o;
+        if (!(o instanceof User user)) return false;
         return Objects.equals(getId(), user.getId());
     }
 

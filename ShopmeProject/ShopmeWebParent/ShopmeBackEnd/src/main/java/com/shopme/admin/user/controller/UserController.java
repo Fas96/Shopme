@@ -5,6 +5,7 @@ import com.shopme.admin.user.UserNotFoundException;
 import com.shopme.admin.user.UserService;
 
 
+import org.sonatype.guice.plexus.config.Roles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,9 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.shopme.common.entity.Role;
 import com.shopme.common.entity.User;
 import java.io.IOException;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Controller
 public class UserController {
@@ -36,6 +35,7 @@ public class UserController {
     @GetMapping("/users/new")
     public String newUser(@ModelAttribute("user") User user, @ModelAttribute("role") Role role,Model model) {
         List<Role> listRoles = service.listRoles();
+        user.addRoles((Set<Role>) listRoles);
 
         user.setEnabled(true);
 
@@ -50,9 +50,9 @@ public class UserController {
 
         try {
             User user = service.get(id);
-            List<Role> listRoles =service.listRoles();
-            Set<Role> roles = user.getRoles();
-
+            ArrayList<Role> listRoles = (ArrayList<Role>) service.listRoles();
+            ArrayList<Role> roles = (ArrayList<Role>) user.getRoles();
+            user.addRoles((Set<Role>) listRoles);
             model.addAttribute("user", user);
             model.addAttribute("itemIds", roles);
             model.addAttribute("pageTitle", "Edit User");

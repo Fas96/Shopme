@@ -88,8 +88,8 @@
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label">Roles:</label>
                     <div class="col-sm-8">
-                        <th:block th:each="role : ${listRoles}">
-                            <input type="checkbox"   th:id="${role.name+'_'+ role.id}" name="roles[]"   th:text="${role.name}" th:value="${role}" class="m-2"
+                        <th:block th:each="role,stat : ${listRoles}" >
+                            <input type="checkbox"   th:id="${role.name+'_'+ role.id}" th:field="*{roles[__${stat.index}__]}"   th:text="${role.name}" th:value="${role}" class="m-2"
                                    th:checked="${#lists.contains(itemIds, role.id)}"/>
                             - <small>[[${role.description}]]</small>
                             <br/>
@@ -176,10 +176,36 @@
     }
     function checkEmailUnique(form){
 
-        var str=$("input:checkbox[name=type]:checked").map(function(){return $(this).val()}).get();
-        alert(str)
 
-        alert($('input:checkbox').filter(':checked'));
+        // var checkBoxs=$('input:checkbox').filter(':checked');
+        // console.log(checkBoxs);
+
+        var roles= Array
+            .from(document.querySelectorAll('input[name="roles"]'))
+            .filter((checkbox) => checkbox.checked)
+            .map((checkbox) => checkbox.value);
+
+
+        document.getElementsByName("roles").values(roles);
+
+
+            $.ajax({
+                accepts:JSON,
+                type: 'POST',
+                url: "/ShopmeAdmin/users/try",
+                data: {
+                    message: 'hello'
+                },
+                success: function(text) {
+                    alert('Response: ' + roles);
+                },
+                error: function (jqXHR) {
+                    alert('Error: ' + roles);
+                }
+            });
+
+
+
 
         var csrf=$("input[name='_csrf']").val();
         var url="[[@{/users/check_email}]]";
@@ -187,7 +213,7 @@
         var userId=$("#id").val();
 
 
-        params={id:userId,email:userEmail,_csrf: csrf};
+        params={id:userId,email:userEmail,_csrf: csrf,roles:roles};
 
 
         // params={email:userEmail}

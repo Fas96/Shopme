@@ -1,5 +1,6 @@
 package com.shopme.common.entity;
 
+import ch.qos.logback.core.BasicStatusManager;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
@@ -10,6 +11,7 @@ import java.util.*;
 @Entity
 @Table(name = "roles")
 public class Role implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Integer id;
@@ -29,6 +31,25 @@ public class Role implements Serializable {
     @Column(length = 150, nullable = false)
     private String description;
 
+    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<User> users = new HashSet<>();
+
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
+    }
+
+    public void addUsers(Set<User> users) {
+        this.users.addAll(users);
+    }
+
+    public void addUser(User users) {
+        this.users.add(users);
+    }
     public Role() {
     }
 
@@ -82,5 +103,10 @@ public class Role implements Serializable {
     @Override
     public String toString() {
         return  name +"_"  ;
+    }
+
+
+    public Integer getRole() {
+        return id;
     }
 }

@@ -11,10 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.shopme.common.entity.Role;
 import com.shopme.common.entity.User;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.Set;
+
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,12 +37,14 @@ public class UserService {
     }
 
 
-    public List<Role> listRoles() {
-        return (List<Role>) roleRepo.findAll();
+    public ArrayList<Role> listRoles() {
+        return (ArrayList<Role>) roleRepo.findAll();
     }
 
 
     public User save(User user) {
+
+        User newUser = new User();
         boolean isUpdatingUser = (user.getId() != null);
         User nUser= new User();
         if (isUpdatingUser) {
@@ -60,14 +60,6 @@ public class UserService {
             encodePassword(user);
         }
 
-
-        nUser.setId(user.getId());
-        nUser.setEmail(user.getEmail());
-        if(user.getPassword() != null){nUser.setPassword(user.getPassword());};
-        nUser.setFirstName(user.getFirstName());
-        nUser.setLastName(user.getLastName());
-        nUser.setEnabled(user.isEnabled());
-        nUser.setPhotos(user.getPhotos());
 
 
 
