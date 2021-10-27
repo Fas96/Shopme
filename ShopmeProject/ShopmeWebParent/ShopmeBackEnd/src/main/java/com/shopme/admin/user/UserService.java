@@ -43,15 +43,13 @@ public class UserService {
 
 
     public User save(User user) {
-
-        User newUser = new User();
         boolean isUpdatingUser = (user.getId() != null);
-        User nUser= new User();
+
         if (isUpdatingUser) {
             User existingUser = userRepo.findById(user.getId()).get();
 
             if (user.getPassword().isEmpty()) {
-                nUser.setPassword(existingUser.getPassword());
+                user.setPassword(existingUser.getPassword());
             } else {
                 encodePassword(user);
             }
@@ -60,10 +58,7 @@ public class UserService {
             encodePassword(user);
         }
 
-
-
-
-        return  userRepo.saveAndFlush(nUser);
+        return userRepo.save(user);
     }
 
     public User updateAccount(User userInForm) {

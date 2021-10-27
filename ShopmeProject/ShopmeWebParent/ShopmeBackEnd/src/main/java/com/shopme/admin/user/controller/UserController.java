@@ -35,7 +35,6 @@ public class UserController {
     @GetMapping("/users/new")
     public String newUser(@ModelAttribute("user") User user, @ModelAttribute("role") Role role,Model model) {
         List<Role> listRoles = service.listRoles();
-        user.addRoles((Set<Role>) listRoles);
 
         user.setEnabled(true);
 
@@ -51,10 +50,8 @@ public class UserController {
         try {
             User user = service.get(id);
             ArrayList<Role> listRoles = (ArrayList<Role>) service.listRoles();
-            ArrayList<Role> roles = (ArrayList<Role>) user.getRoles();
-            user.addRoles((Set<Role>) listRoles);
+
             model.addAttribute("user", user);
-            model.addAttribute("itemIds", roles);
             model.addAttribute("pageTitle", "Edit User");
             model.addAttribute("listRoles", listRoles);
             return "user_form";
