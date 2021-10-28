@@ -16,7 +16,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
+
 public class UserService {
     @Autowired
     private UserRepository userRepo;
@@ -43,11 +43,14 @@ public class UserService {
     }
 
 
+    @Transactional
     public User save(User user) {
+
         boolean isUpdatingUser = (user.getId() != null);
 
         if (isUpdatingUser) {
             User existingUser = userRepo.findById(user.getId()).get();
+
 
             if (user.getPassword().isEmpty()) {
                 user.setPassword(existingUser.getPassword());
@@ -60,22 +63,9 @@ public class UserService {
 
         }
 
-//        roleRepo.findById(1);
-//        System.out.println(user.getRoles());
-//        System.out.println("============rooles==============");
-//          addRoles(user.getRoles())
-          user.getRoles().forEach(e->{
-              System.out.println("===================seting===============");
-              Role role= new Role();
-              role.setName(e.getName());
-              role.setDescription(e.getDescription());
-              user.getRoles().add(role);
-             roleRepo.save(role);
-          });
 
 
-//        user.getRoles().add( roleRepo.findById(1).get());
-//
+
         return userRepo.save(user);
     }
     public User updateAccount(User userInForm) {

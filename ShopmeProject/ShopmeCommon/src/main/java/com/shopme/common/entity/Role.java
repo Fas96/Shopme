@@ -28,6 +28,8 @@ public class Role implements Serializable {
 
 
 
+
+
     @Column(length = 150, nullable = false)
     private String description;
 
@@ -46,6 +48,7 @@ public class Role implements Serializable {
         this.name = name;
         this.description = description;
     }
+
 
     public String getName() {
         return name;
@@ -92,5 +95,6 @@ public class Role implements Serializable {
     public String toString() {
         return this.name;
     }
+
 
 }

@@ -84,7 +84,7 @@
                                 +${user.getId()}+'/enabled/false'}" title="disable this user" ></a>
                                 <a th:if="${ user.isEnabled() == false}" title="enable this user" class="fas fa-circle icon-dark"  th:href="@{'/users/'
                                 +${user.getId()}+'/enabled/true'}" ></a></td>
-                            <td class="color-primary"><a th:href="@{'/users/edit/'+${user.getId()}}"><span class="badge badge-primary">Edit</span></a>  &nbsp;<a th:href="@{'/users/delete/'+${user.getId()}}" th:userId="*{user.getId()}" class="link-delete"><span class="badge badge-danger"> Delete</span> </a></td>
+                            <td class="color-primary"><a th:href="@{'/users/edit/'+${user.getId()}}"><span class="badge badge-primary">Edit</span></a>  &nbsp;<a th:href="@{'/users/delete/'+${user.id}}" th:userId="*{user.id}"  ><span class="badge badge-danger"> Delete</span> </a></td>
                         </tr>
 
 

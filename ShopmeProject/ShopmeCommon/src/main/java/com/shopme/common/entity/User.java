@@ -31,7 +31,7 @@ public class User  implements Serializable {
 
     private boolean enabled;
 
-    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @ManyToMany(cascade={CascadeType.PERSIST,CascadeType.REMOVE, CascadeType.REFRESH,CascadeType.MERGE},fetch = FetchType.EAGER)
     @JoinTable(
             name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -108,9 +108,7 @@ public class User  implements Serializable {
         this.roles = roles;
     }
 
-    public void addRole(Role role) {
-        this.roles.add(role);
-    }
+
 
     @Override
     public String toString() {

@@ -31,7 +31,7 @@ public class UserController {
         return "login";
     }
 
-    @GetMapping("")
+    @GetMapping("/")
     public String usersList(Model model) {
         model.addAttribute("users", service.listAll());
         model.addAttribute("pageTitle", "Users List");
@@ -64,7 +64,7 @@ public class UserController {
             return "user_form";
         } catch (UserNotFoundException e) {
             redirectAttributes.addFlashAttribute("sMessage", e.getMessage());
-            return "redirect:users";
+            return "redirect:/";
         }
 
     }
