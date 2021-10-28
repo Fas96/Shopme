@@ -20,39 +20,46 @@ import java.io.IOException;
 import java.util.*;
 
 @Controller
+@RequestMapping("/users")
 public class UserController {
 
     @Autowired
     private UserService service;
 
-    @GetMapping("/users")
+    @GetMapping("/login")
+    public String login(){
+        return "login";
+    }
+
+    @GetMapping("")
     public String usersList(Model model) {
         model.addAttribute("users", service.listAll());
         model.addAttribute("pageTitle", "Users List");
         return "users";
     }
 
-    @GetMapping("/users/new")
+    @GetMapping("/new")
     public String newUser(@ModelAttribute("user") User user, @ModelAttribute("role") Role role,Model model) {
         List<Role> listRoles = service.listRoles();
 
+        User usser = new User();
         user.setEnabled(true);
 
+        model.addAttribute("user", usser);
         model.addAttribute("listRoles", listRoles);
-
         model.addAttribute("pageTitle", "Create New User");
         return "user_form";
     }
 
-    @GetMapping("/users/edit/{id}")
+    @GetMapping("/edit/{id}")
     public String editUser(@PathVariable("id") Integer id, Model model, RedirectAttributes redirectAttributes) {
 
         try {
             User user = service.get(id);
-            ArrayList<Role> listRoles = (ArrayList<Role>) service.listRoles();
+            List<Role> listRoles = service.listRoles();
 
             model.addAttribute("user", user);
-            model.addAttribute("pageTitle", "Edit User");
+            model.addAttribute("pageTitle", "Edit User (ID: " + id + ")");
             model.addAttribute("listRoles", listRoles);
             return "user_form";
         } catch (UserNotFoundException e) {
@@ -63,7 +70,7 @@ public class UserController {
     }
 
 
-    @GetMapping("/users/delete/{id}")
+    @GetMapping("/delete/{id}")
     public String deleteUser(@PathVariable("id") Integer id,RedirectAttributes redirectAttributes) throws UserNotFoundException {
        try {
            service.delete(id);
@@ -72,19 +79,13 @@ public class UserController {
        }catch (UserNotFoundException e){
            redirectAttributes.addFlashAttribute("sMessage", e.getMessage());
        }
-        return "redirect:/users";
+        return "redirect:/";
     }
 
-    @PostMapping("/users/save")
+    @PostMapping("/save")
     public String saveUser(User user, RedirectAttributes redirectAttributes, @RequestParam("image") MultipartFile multipartFile) throws IOException {
-        user.addRoles(user.getRoles());
-        System.out.println("================================");
-        System.out.println("================================");
-        System.out.println("================================");
-        System.out.println(user);
-        System.out.println("================================");
-        System.out.println("================================");
-        System.out.println("================================");
+
+
         if(!multipartFile.isEmpty()){
             String fileName= StringUtils.cleanPath(Objects.requireNonNull(multipartFile.getOriginalFilename()));
             user.setPhotos(fileName);
@@ -98,11 +99,15 @@ public class UserController {
             service.save(user);
         }
         redirectAttributes.addFlashAttribute("sMessage","User has been saved Successfully");
-        return "redirect:/users";
+        return "redirect:/";
+    }
+    @PostMapping("/doLogin")
+    public String doLogin(){
+        return "redirect:/";
     }
 
 
-    @GetMapping("/users/{id}/enabled/{status}")
+    @GetMapping("/{id}/enabled/{status}")
     public String updateUserEnableStatus(@PathVariable("id") Integer id,@PathVariable("status") boolean status, RedirectAttributes redirectAttributes){
 
         service.updateUserEnabledStatus(id,status);
@@ -114,6 +119,6 @@ public class UserController {
         }
         redirectAttributes.addFlashAttribute("sMessage",msg);
 
-        return "redirect:/users";
+        return "redirect:/";
     }
 }

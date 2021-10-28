@@ -31,7 +31,12 @@ public class User  implements Serializable {
 
     private boolean enabled;
 
-    @ManyToMany(mappedBy = "users",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
     private Set<Role> roles = new HashSet<>();
 
     public User() {
@@ -44,52 +49,6 @@ public class User  implements Serializable {
         this.lastName = lastName;
     }
 
-
-
-    public void addRole(Role role) {
-
-        this.roles.add(role);
-    }
-    public void addRoles(Set<Role> role) {
-        this.roles.addAll(role);
-    }
-
-    @Override
-    public String toString() {
-        return "User [id=" + id + ", email=" + email + ", firstName=" + firstName + ", lastName=" + lastName
-                + ", roles=" + roles + "]";
-    }
-
-
-    @Transient
-    public String getPhotosImagePath() {
-        if (id == null || photos == null) return "/images/default-user.png";
-
-        return "/users-photos/"+this.id+"/"+this.photos;
-    }
-
-
-
-
-    public boolean hasRole(String roleName) {
-
-        for (Role role : roles) {
-            if (role.getName().equals(roleName)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
     public String getEmail() {
         return email;
     }
@@ -108,6 +67,9 @@ public class User  implements Serializable {
 
     public String getFirstName() {
         return firstName;
+    }
+    public void addRole(Role ad){
+        this.roles.add(ad);
     }
 
     public void setFirstName(String firstName) {
@@ -145,6 +107,51 @@ public class User  implements Serializable {
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
+
+    public void addRole(Role role) {
+        this.roles.add(role);
+    }
+
+    @Override
+    public String toString() {
+        return "User [id=" + id + ", email=" + email + ", firstName=" + firstName + ", lastName=" + lastName
+                + ", roles=" + roles + "]";
+    }
+
+
+    @Transient
+    public String getFullName() {
+        return firstName + " " + lastName;
+    }
+
+    public boolean hasRole(String roleName) {
+        Iterator<Role> iterator = roles.iterator();
+
+        while (iterator.hasNext()) {
+            Role role = iterator.next();
+            if (role.getName().equals(roleName)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @Transient
+    public String getPhotosImagePath() {
+        if (id == null || photos == null) return "/images/default-user.png";
+
+        return "/users-photos/"+this.id+"/"+this.photos;
+    }
+
+
+
+
+
+    public Integer getId() {
+        return id;
+    }
+
 
     @Override
     public boolean equals(Object o) {

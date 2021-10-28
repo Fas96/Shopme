@@ -26,7 +26,8 @@ public class UserService {
     @Autowired
     RoleService Rservice;
 
-    private PasswordEncoder passwordEncoder=new BCryptPasswordEncoder();
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     public User getByEmail(String email) {
         return userRepo.getUserByEmail(email);
@@ -56,11 +57,27 @@ public class UserService {
 
         } else {
             encodePassword(user);
+
         }
 
+//        roleRepo.findById(1);
+//        System.out.println(user.getRoles());
+//        System.out.println("============rooles==============");
+//          addRoles(user.getRoles())
+          user.getRoles().forEach(e->{
+              System.out.println("===================seting===============");
+              Role role= new Role();
+              role.setName(e.getName());
+              role.setDescription(e.getDescription());
+              user.getRoles().add(role);
+             roleRepo.save(role);
+          });
+
+
+//        user.getRoles().add( roleRepo.findById(1).get());
+//
         return userRepo.save(user);
     }
-
     public User updateAccount(User userInForm) {
         User userInDB = userRepo.findById(userInForm.getId()).get();
 
