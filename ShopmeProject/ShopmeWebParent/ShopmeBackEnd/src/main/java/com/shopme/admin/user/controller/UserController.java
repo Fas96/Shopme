@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.util.*;
 
 @Controller
-@RequestMapping("/users")
 public class UserController {
 
     @Autowired
@@ -31,14 +30,14 @@ public class UserController {
         return "login";
     }
 
-    @GetMapping("/")
+    @GetMapping("/users")
     public String usersList(Model model) {
         model.addAttribute("users", service.listAll());
         model.addAttribute("pageTitle", "Users List");
         return "users";
     }
 
-    @GetMapping("/new")
+    @GetMapping("/users/new")
     public String newUser(@ModelAttribute("user") User user, @ModelAttribute("role") Role role,Model model) {
         List<Role> listRoles = service.listRoles();
 
@@ -79,7 +78,7 @@ public class UserController {
        }catch (UserNotFoundException e){
            redirectAttributes.addFlashAttribute("sMessage", e.getMessage());
        }
-        return "redirect:/";
+        return "redirect:/users";
     }
 
     @PostMapping("/save")
@@ -99,11 +98,11 @@ public class UserController {
             service.save(user);
         }
         redirectAttributes.addFlashAttribute("sMessage","User has been saved Successfully");
-        return "redirect:/";
+        return "redirect:/users";
     }
     @PostMapping("/doLogin")
     public String doLogin(){
-        return "redirect:/";
+        return "redirect:/users";
     }
 
 
@@ -119,6 +118,6 @@ public class UserController {
         }
         redirectAttributes.addFlashAttribute("sMessage",msg);
 
-        return "redirect:/";
+        return "redirect:/users";
     }
 }
